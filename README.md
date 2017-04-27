@@ -3,4 +3,4 @@
 
 This is a version of Battleship I wrote as part of the Treehouse Python Web Development Tech Degree. 
 
-Simply load the game in your terminal and enjoy.
+Simply grab another player, load the game up in your terminal and enjoy.
