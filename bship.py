@@ -1,6 +1,9 @@
 import os
 
-##########################################################################
+# Battleship: A programming noob's version of the classic
+# by Adam Cameron, April 2017
+
+# Universal variables for various uses
 
 BOARD_SIZE = 10
 
@@ -60,19 +63,14 @@ HIT = '*'
 SUNK = '#'
 
 COLUMNS = 'abcdefghij'
-    
-##########################################################################
-
-# Clear screen function
-
 
 def clear_screen():
+    """Clear screen"""
     os.system('cls' if os.name == 'nt' else 'clear')
 
 
-##########################################################################
-
 def choice_getter(board, player):
+    """Take a choice of which ship to place from the user"""
     ships_to_choose = [
         ['a', 'Aircraft Carrier'],
         ['b', 'Battleship'],
@@ -80,6 +78,9 @@ def choice_getter(board, player):
         ['d', 'Cruiser'],
         ['e', 'Patrol Boat']
     ]
+    letter_choices = {
+        'a': 'a', 'b': 'b', 'c': 'c', 'd': 'd', 'e': 'e'
+    }
 
     while ships_to_choose:
         clear_screen()
@@ -88,21 +89,21 @@ def choice_getter(board, player):
         for i, j in ships_to_choose:
             print("[{}] {}".format(i, j))
         user_choice = input("\n> ").lower()
-        if user_choice in ship_choices.keys():
+        if user_choice in letter_choices.keys():
             for i in ships_to_choose:
                 if i[0] == user_choice:
                     ships_to_choose.remove(i)
+                    del letter_choices[user_choice]
             ship_placer(board, user_choice, player)
 
         else:
             input("\nSorry, that's not a valid choice. Hit ENTER to continue...")
 
 
-##########################################################################
-
 def ship_placer(board, choice, player):
+    """Place ships on each player's board"""
     clear_screen()
-    unplaced=True
+    unplaced = True
     while unplaced:
         clear_screen()
         print(board)
@@ -134,7 +135,8 @@ Please type 'H' for horizontal and 'V' for vertical and press ENTER.\n
                         board.board[i][j] = HORIZONTAL_SHIP
                     unplaced = False
                 else:
-                    input("Sorry, your ship goes off the map or intersects with a previously placed ship. Press ENTER to try again...")
+                    input(
+                        "Sorry, your ship goes off the map or intersects with a previously placed ship. Press ENTER to try again...")
 
             else:
                 clear_screen()
@@ -170,25 +172,28 @@ Please type 'H' for horizontal and 'V' for vertical and press ENTER.\n
                     else:
                         clear_screen()
                         print(board)
-                        input("\nSorry, the ship cannot intersect with a previously placed ship. Press ENTER to try again...")
+                        input(
+                            "\nSorry, the ship cannot intersect with a previously placed ship. Press ENTER to try again...")
 
                 else:
                     clear_screen()
                     print(board)
-                    input("\nSorry, your ship cannot be placed off of the map. Please press ENTER to try again...")
+                    input(
+                        "\nSorry, your ship cannot be placed off of the map. Please press ENTER to try again...")
 
             else:
                 clear_screen()
                 print(board)
                 input(
-                    "\nSorry, your column or row choice was invalid. Please press ENTER to try again...") 
+                    "\nSorry, your column or row choice was invalid. Please press ENTER to try again...")
 
-##########################################################################
 
 def turn_taker(attacker, defender, attacker_main, defender_main, defender_view):
+    """Let each player take a shot at the other's board"""
     shooting = True
     clear_screen()
-    input("\nIt's {}'s turn! Please press ENTER when {} has the computer.".format(attacker.name, attacker.name))
+    input("\nIt's {}'s turn! Please press ENTER when {} has the computer.".format(
+        attacker.name, attacker.name))
     while shooting:
         clear_screen()
         print("    {}'s Board\n".format(defender.name))
@@ -196,7 +201,8 @@ def turn_taker(attacker, defender, attacker_main, defender_main, defender_view):
         print('\n')
         print("    {}'s Board\n".format(attacker.name))
         print(attacker_main)
-        col_choice = input("\nTake your best shot, {}! Please choose a column:\n> ".format(attacker.name)).lower()
+        col_choice = input("\nTake your best shot, {}! Please choose a column:\n> ".format(
+            attacker.name)).lower()
         row_choice = input("\nChoose a row:\n> ")
         try:
             row_choice = int(row_choice)
@@ -220,7 +226,8 @@ def turn_taker(attacker, defender, attacker_main, defender_main, defender_view):
                 print('\n')
                 print("    {}'s Board\n".format(attacker.name))
                 print(attacker_main)
-                input("\nMiss! Please press ENTER and pass the computer to {}.".format(defender.name))
+                input("\nMiss! Please press ENTER and pass the computer to {}.".format(
+                    defender.name))
                 shooting = False
             elif defender_view.board[row_choice - 1][COLS[col_choice]] == SUNK:
                 clear_screen()
@@ -240,30 +247,25 @@ def turn_taker(attacker, defender, attacker_main, defender_main, defender_view):
                 print("    {}'s Board\n".format(attacker.name))
                 print(attacker_main)
                 input("\nDirect hit! Great job! Hit ENTER to continue...")
-                attack = (row_choice-1, COLUMNS.index(col_choice))
-                check_for_sink(attack, attacker, defender, attacker_main, defender_main, defender_view)
+                attack = (row_choice - 1, COLUMNS.index(col_choice))
+                check_for_sink(attack, attacker, defender,
+                               attacker_main, defender_main, defender_view)
                 shooting = False
             # attack = (row_choice-1, COLUMNS.index(col_choice))
             # hit_and_sink(attack, attacker, defender, attacker_main, defender_main, defender_view)
         else:
-            input("\nSorry! You need to choose a row between 1-10 and a column! Try again!")
+            input(
+                "\nSorry! You need to choose a row between 1-10 and a column! Try again!")
 
 
-##########################################################################
 
 def check_for_sink(attack, attacker, defender, attacker_main, defender_main, defender_view):
-    # Loop through list of ship objects under Player object
+    """Called at the end of turn_taker(), check to see if a player's ship has been sunk"""
     for key, value in defender.ships.items():
-        # Check for presence of attack tuple in each instance of ship.coordinates (a list of tuples)
-        # Also check to see if no. of hits is less than length, should skip already sunken ships
         if attack in value.coordinates and value.hits < value.length:
-            # Increment hits by one
             value.hits += 1
-    # Now that hits have been incremented, loop through defender's ships
     for key, value in defender.ships.items():
-        # Check hits against length
         if value.hits == value.length and value.sunk == False:
-            # If hits == length, place SUNK at board indexes corresponding with all ship's coordinates
             for i, j in value.coordinates:
                 defender_main.board[i][j] = SUNK
             for i, j in value.coordinates:
@@ -276,31 +278,39 @@ def check_for_sink(attack, attacker, defender, attacker_main, defender_main, def
             print('\n')
             print("    {}'s Board\n".format(attacker.name))
             print(attacker_main)
-            input("\nWow! Great job {}! You sunk {}'s {}! Press ENTER to continue...".format(attacker.name, defender.name, sunken))
+            input("\nWow! Great job {}! You sunk {}'s {}! Press ENTER to continue...".format(
+                attacker.name, defender.name, sunken))
 
-
-##########################################################################
 
 def check_for_victory(defender, attacker):
+    """Check to see if all of either player's ships have been sunk"""
     holder = []
     for key, value in defender.ships.items():
         holder.append(value.sunk)
     if len(holder) == 5 and all(p == True for p in holder):
         clear_screen()
-        input("All of {}'s ships have been sunk! {} wins!!! Press ENTER to quit...".format(defender.name, attacker.name))
+        input("All of {}'s ships have been sunk! {} wins!!! Press ENTER to quit...".format(
+            defender.name, attacker.name))
         quit()
 
-##########################################################################
 
 class Player:
+    """Class of Player objects.
+    Players have a name and a list of ships, taken from the Ship class.
+    """
     ships = []
-    def __init__(self, name):
-        self.name= name
 
-##########################################################################
+    def __init__(self, name):
+        self.name = name
+
 
 class Ship:
-    def __init__(self, name, length, hits=0, coordinates = [], sunk=False):
+    """Ship object containing name, length,
+    number of hits, coordinates,
+    and whether ship has been sunk.
+    """
+    
+    def __init__(self, name, length, hits=0, coordinates=[], sunk=False):
         self.name = name
         self.length = length
         self.hits = hits
@@ -308,42 +318,34 @@ class Ship:
         self.sunk = sunk
 
 
-##########################################################################
-
-
 class Board:
-    """Docstring for class Board"""
+    """Board object.
+    
+    self.board -- the list of lists of EMPTYs that is manipulated as players place ships
+    self.columns -- the top row of letters on the board
 
-    # __init__ method designates board, columns, and rows as attributes
-    # self.board is the list of lists of EMPTYs that gets manipulated when players place ships
-    # self.columns is the top row of letters
-    # self.rows is self.board rearranged to look nice in a string
+    make_printable() -- renders the list of lists into a viewable board
+
+    """
+
     def __init__(self):
-        self.board= [[EMPTY] * len(range(BOARD_SIZE))
+        self.board = [[EMPTY] * len(range(BOARD_SIZE))
                       for number in range(BOARD_SIZE)]
-        self.columns= "    " + \
+        self.columns = "    " + \
             " ".join([chr(c) for c in range(ord('A'), ord('A') + BOARD_SIZE)])
 
     def make_printable(self, board):
-        myobj= enumerate(self.board, start=1)
-        output= []
+        myobj = enumerate(self.board, start=1)
+        output = []
         for index, value in myobj:
             output.append(' {:<2} {}'.format(index, ' '.join(value)))
         return output
-
-    # String magic method - returns strings contained in columns and rows
-    # variables
 
     def __str__(self):
         return self.columns + '\n' + ('\n'.join(self.make_printable(self.board)))
 
 
-
-##########################################################################
-
-
-# Intro and prompt players for names, create Player objects
-
+# Actual game begins here
 
 clear_screen()
 input("Welcome to BATTLESHIP! Press ENTER to see the rules...")
@@ -361,16 +363,16 @@ Patrol Boat, 2 spaces
 """)
 input("Press enter to continue...")
 clear_screen()
-p1_name= input("Please enter the first player's name.\n> ")
+p1_name = input("Please enter the first player's name.\n> ")
 clear_screen()
-p2_name= input(
+p2_name = input(
     "Welcome, {}!\nPlease enter the second player's name.\n> ".format(p1_name))
-p1= Player(p1_name)
-p2= Player(p2_name)
-p1_board= Board()
-p2_board= Board()
-p1_enemy_view= Board()
-p2_enemy_view= Board()
+p1 = Player(p1_name)
+p2 = Player(p2_name)
+p1_board = Board()
+p2_board = Board()
+p1_enemy_view = Board()
+p2_enemy_view = Board()
 # p1_tracker = Board()
 # p2_tracker = Board()
 p1_air = Ship('Aircraft Carrier', 5)
@@ -383,18 +385,8 @@ p2_ba = Ship('Battleship', 4)
 p2_su = Ship('Submarine', 3)
 p2_cr = Ship('Cruiser', 3)
 p2_pa = Ship('Patrol Boat', 2)
-
 p1.ships = {'a': p1_air, 'b': p1_ba, 'c': p1_su, 'd': p1_cr, 'e': p1_pa}
 p2.ships = {'a': p2_air, 'b': p2_ba, 'c': p2_su, 'd': p2_cr, 'e': p2_pa}
-
-
-
-
-# Display empty board
-# Prompt users to place ships
-# Validate input
-# Update/display updated board
-
 clear_screen()
 input("Welcome, {}! Please make sure only {} can see the laptop, then press ENTER...".format(
     p2_name, p1_name))
@@ -417,14 +409,3 @@ while game_ongoing:
     check_for_victory(p2, p1)
     turn_taker(p2, p1, p2_board, p1_board, p1_enemy_view)
     check_for_victory(p2, p1)
-# Thank you for playing, press enter to quit here.
-
-
-
-
-
-
-
-
-
-
