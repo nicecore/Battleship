@@ -1,4 +1,6 @@
 # Battleship: A recreation of the classic
-## Adam Cameron, 2017
+## by Adam Cameron, April 2017
 
-Simply load the game with your terminal and enjoy.
+This is a version of Battleship I wrote as part of the Treehouse Python Web Development Tech Degree. 
+
+Simply load the game in your terminal and enjoy.
