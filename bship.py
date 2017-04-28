@@ -1,4 +1,5 @@
 import os
+from bship_classes import Ship, Board, Player
 
 # Battleship: A programming noob's version of the classic
 # by Adam Cameron, April 2017
@@ -320,71 +321,12 @@ def check_for_victory(defender, attacker):
             defender.name, attacker.name))
         quit()
 
-
-class Player:
-    """Class of Player objects.
-    Players have a name and a list of ships, taken from the Ship class.
-    """
-    ships = []
-
-    def __init__(self, name):
-        self.name = name
-
-
-class Ship:
-    """Ship object containing name, length,
-    number of hits, coordinates,
-    and whether ship has been sunk.
-    """
-    
-    def __init__(
-        self, name, length, 
-        hits=0, coordinates=[], 
-        sunk=False):
-
-        self.name = name
-        self.length = length
-        self.hits = hits
-        self.coordinates = coordinates
-        self.sunk = sunk
-
-
-class Board:
-    """Board object.
-    
-    self.board -- the list of lists of EMPTYs 
-    that is manipulated as players place ships
-
-    self.columns -- the top row of letters on the board
-
-    make_printable() -- renders the list of lists into a viewable board
-
-    """
-
-    def __init__(self):
-        self.board = [[EMPTY] * len(range(BOARD_SIZE))
-                      for number in range(BOARD_SIZE)]
-        self.columns = "    " + \
-            " ".join([chr(c) for c in range(ord('A'), ord('A') + BOARD_SIZE)])
-
-    def make_printable(self, board):
-        myobj = enumerate(self.board, start=1)
-        output = []
-        for index, value in myobj:
-            output.append(' {:<2} {}'.format(index, ' '.join(value)))
-        return output
-
-    def __str__(self):
-        return self.columns + '\n' + ('\n'.join(self.make_printable(self.board)))
-
-
 # Actual game begins here
 
 clear_screen()
 input("Welcome to BATTLESHIP! Press ENTER to see the rules...")
 clear_screen()
-print("""
-You have five ships of varying lengths to place
+print("""You have five ships of varying lengths to place
 anywhere on the vast open sea before you.
 Choose wisely, sailors!\n
 Your current fleet, along with each ship's length:\n
@@ -421,27 +363,24 @@ p2_pa = Ship('Patrol Boat', 2)
 p1.ships = {'a': p1_air, 'b': p1_ba, 'c': p1_su, 'd': p1_cr, 'e': p1_pa}
 p2.ships = {'a': p2_air, 'b': p2_ba, 'c': p2_su, 'd': p2_cr, 'e': p2_pa}
 clear_screen()
-input(
-    """Welcome, {}! Please make sure only 
-    {} can see the laptop, then press ENTER...""".format(
+input("""Welcome, {}! Please make sure only 
+{} can see the laptop, then press ENTER...""".format(
         p2_name, p1_name)
     )
 clear_screen()
 choice_getter(p1_board, p1)
 clear_screen()
 print(p1_board)
-input("""
-Great job, {}! Now please press ENTER and pass the 
+input("""Great job, {}! Now please press ENTER and pass the 
 computer to {} so they can place their ships.
 """.format(p1.name, p2.name))
 clear_screen()
 choice_getter(p2_board, p2)
 clear_screen()
 print(p2_board)
-input(
-    """Great job, {}! Please hit ENTER and pass the computer to 
-    {} so they can begin their first turn.""".format(
-        p2.name, p1.name)
+input("""Great job, {}! Please hit ENTER and pass the computer to 
+{} so they can begin their first turn.""".format(
+    p2.name, p1.name)
     )
 clear_screen()
 game_ongoing = True
