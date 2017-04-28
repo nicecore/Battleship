@@ -108,10 +108,13 @@ def ship_placer(board, choice, player):
         clear_screen()
         print(board)
         horiz_vert = input("""
-{}, would you like to place your {} horizontally or vertically? Remember that the
-{} takes up {} spaces! Ships will be placed from left to right and from top to bottom.
+{}, would you like to place your {} horizontally or vertically? 
+Remember that the {} takes up {} spaces!
+Ships will be placed from left to right and from top to bottom.
 Please type 'H' for horizontal and 'V' for vertical and press ENTER.\n 
->""".format(player.name, SHIPS[choice][0], SHIPS[choice][0], SHIPS[choice][1])).lower()
+>""".format(
+    player.name, SHIPS[choice][0], SHIPS[choice][0], SHIPS[choice][1])
+).lower()
         if horiz_vert == 'h':
             clear_screen()
             print(board)
@@ -124,7 +127,10 @@ Please type 'H' for horizontal and 'V' for vertical and press ENTER.\n
             except ValueError:
                 row_choice = 99
             if row_choice in list(range(1, 11)) and col_choice in COLS.keys():
-                if len(board.board[row_choice - 1][COLUMNS.index(col_choice):]) >= SHIPS[choice][1] and all(p == EMPTY for p in (board.board[row_choice - 1][COLS[col_choice]:(COLS[col_choice] + SHIPS[choice][1])])) == True:
+                if (len(board.board[row_choice-1][COLUMNS.index(col_choice):]) 
+                    >= SHIPS[choice][1] and 
+                    all(p == EMPTY for p in (board.board[row_choice - 1][COLS[col_choice]:
+                        (COLS[col_choice] + SHIPS[choice][1])])) == True):
                     col = COLUMNS.index(col_choice)
                     row = row_choice - 1
                     player.ships[choice].coordinates = [(row, col)]
@@ -136,13 +142,16 @@ Please type 'H' for horizontal and 'V' for vertical and press ENTER.\n
                     unplaced = False
                 else:
                     input(
-                        "Sorry, your ship goes off the map or intersects with a previously placed ship. Press ENTER to try again...")
+                        """Sorry, your ship goes off the map or intersects 
+                        with a previously placed ship. Press ENTER to try again...
+                        """)
 
             else:
                 clear_screen()
                 print(board)
                 input(
-                    "\nSorry, your column or row choice was invalid. Please press ENTER to try again...")
+                    """\nSorry, your column or row choice was invalid. 
+                    Please press ENTER to try again...""")
         if horiz_vert == 'v':
             clear_screen()
             print(board)
@@ -161,7 +170,7 @@ Please type 'H' for horizontal and 'V' for vertical and press ENTER.\n
                         holder.append(i[COLUMNS.index(col_choice)])
                     if all(p == EMPTY for p in holder):
                         col = COLUMNS.index(col_choice)
-                        row = row_choice - 1
+                        row = row_choice-1
                         player.ships[choice].coordinates = [(row, col)]
                         for i in range(player.ships[choice].length - 1):
                             row += 1
@@ -173,22 +182,30 @@ Please type 'H' for horizontal and 'V' for vertical and press ENTER.\n
                         clear_screen()
                         print(board)
                         input(
-                            "\nSorry, the ship cannot intersect with a previously placed ship. Press ENTER to try again...")
+                            """\nSorry, the ship cannot intersect with a previously placed ship.
+                            Press ENTER to try again..."""
+                            )
 
                 else:
                     clear_screen()
                     print(board)
                     input(
-                        "\nSorry, your ship cannot be placed off of the map. Please press ENTER to try again...")
+                        """\nSorry, your ship cannot be placed off of the map. 
+                        Please press ENTER to try again...
+                        """)
 
             else:
                 clear_screen()
                 print(board)
                 input(
-                    "\nSorry, your column or row choice was invalid. Please press ENTER to try again...")
+                    """\nSorry, your column or row choice was invalid. 
+                    Please press ENTER to try again...""")
 
 
-def turn_taker(attacker, defender, attacker_main, defender_main, defender_view):
+def turn_taker(
+    attacker, defender, 
+    attacker_main, defender_main, 
+    defender_view):
     """Let each player take a shot at the other's board"""
     shooting = True
     clear_screen()
@@ -201,7 +218,9 @@ def turn_taker(attacker, defender, attacker_main, defender_main, defender_view):
         print('\n')
         print("    {}'s Board\n".format(attacker.name))
         print(attacker_main)
-        col_choice = input("\nTake your best shot, {}! Please choose a column:\n> ".format(
+        col_choice = input("""
+            \nTake your best shot, {}! 
+            Please choose a column:\n> """.format(
             attacker.name)).lower()
         row_choice = input("\nChoose a row:\n> ")
         try:
@@ -209,7 +228,8 @@ def turn_taker(attacker, defender, attacker_main, defender_main, defender_view):
         except ValueError:
             row_choice = 99
         if row_choice in list(range(1, 11)) and col_choice in COLS.keys():
-            if defender_view.board[row_choice - 1][COLS[col_choice]] == MISS or defender_main.board[row_choice - 1][COLS[col_choice]] == HIT:
+            if (defender_view.board[row_choice-1][COLS[col_choice]] == MISS or 
+                defender_main.board[row_choice-1][COLS[col_choice]] == HIT):
                 clear_screen()
                 print("    {}'s Board\n".format(defender.name))
                 print(defender_view)
@@ -217,8 +237,8 @@ def turn_taker(attacker, defender, attacker_main, defender_main, defender_view):
                 print("    {}'s Board\n".format(attacker.name))
                 print(attacker_main)
                 input("\nYou already fired in that spot! Press ENTER to try again...")
-            elif defender_main.board[row_choice - 1][COLS[col_choice]] == EMPTY:
-                defender_view.board[row_choice - 1][COLS[col_choice]] = MISS
+            elif defender_main.board[row_choice-1][COLS[col_choice]] == EMPTY:
+                defender_view.board[row_choice-1][COLS[col_choice]] = MISS
                 clear_screen()
                 print("    {}'s Board\n".format(defender.name))
                 print('\n')
@@ -237,9 +257,10 @@ def turn_taker(attacker, defender, attacker_main, defender_main, defender_view):
                 print("    {}'s Board\n".format(attacker.name))
                 print(attacker_main)
                 input("\nYou already fired in that spot! Press ENTER to try again...")
-            elif defender_main.board[row_choice - 1][COLS[col_choice]] == VERTICAL_SHIP or defender_main.board[row_choice - 1][COLS[col_choice]] == HORIZONTAL_SHIP:
-                defender_view.board[row_choice - 1][COLS[col_choice]] = HIT
-                defender_main.board[row_choice - 1][COLS[col_choice]] = HIT
+            elif (defender_main.board[row_choice-1][COLS[col_choice]] == VERTICAL_SHIP or 
+                defender_main.board[row_choice-1][COLS[col_choice]] == HORIZONTAL_SHIP):
+                defender_view.board[row_choice-1][COLS[col_choice]] = HIT
+                defender_main.board[row_choice-1][COLS[col_choice]] = HIT
                 clear_screen()
                 print("    {}'s Board\n".format(defender.name))
                 print(defender_view)
@@ -251,16 +272,20 @@ def turn_taker(attacker, defender, attacker_main, defender_main, defender_view):
                 check_for_sink(attack, attacker, defender,
                                attacker_main, defender_main, defender_view)
                 shooting = False
-            # attack = (row_choice-1, COLUMNS.index(col_choice))
-            # hit_and_sink(attack, attacker, defender, attacker_main, defender_main, defender_view)
         else:
             input(
                 "\nSorry! You need to choose a row between 1-10 and a column! Try again!")
 
 
 
-def check_for_sink(attack, attacker, defender, attacker_main, defender_main, defender_view):
-    """Called at the end of turn_taker(), check to see if a player's ship has been sunk"""
+def check_for_sink(
+    attack, attacker, defender, 
+    attacker_main, defender_main, 
+    defender_view):
+    """
+    Called at the end of turn_taker(), 
+    check to see if a player's ship has been sunk
+    """
     for key, value in defender.ships.items():
         if attack in value.coordinates and value.hits < value.length:
             value.hits += 1
@@ -289,7 +314,9 @@ def check_for_victory(defender, attacker):
         holder.append(value.sunk)
     if len(holder) == 5 and all(p == True for p in holder):
         clear_screen()
-        input("All of {}'s ships have been sunk! {} wins!!! Press ENTER to quit...".format(
+        input(
+            """All of {}'s ships have been sunk! {} wins!!! 
+            Press ENTER to quit...""".format(
             defender.name, attacker.name))
         quit()
 
@@ -310,7 +337,11 @@ class Ship:
     and whether ship has been sunk.
     """
     
-    def __init__(self, name, length, hits=0, coordinates=[], sunk=False):
+    def __init__(
+        self, name, length, 
+        hits=0, coordinates=[], 
+        sunk=False):
+
         self.name = name
         self.length = length
         self.hits = hits
@@ -321,7 +352,9 @@ class Ship:
 class Board:
     """Board object.
     
-    self.board -- the list of lists of EMPTYs that is manipulated as players place ships
+    self.board -- the list of lists of EMPTYs 
+    that is manipulated as players place ships
+
     self.columns -- the top row of letters on the board
 
     make_printable() -- renders the list of lists into a viewable board
@@ -388,20 +421,28 @@ p2_pa = Ship('Patrol Boat', 2)
 p1.ships = {'a': p1_air, 'b': p1_ba, 'c': p1_su, 'd': p1_cr, 'e': p1_pa}
 p2.ships = {'a': p2_air, 'b': p2_ba, 'c': p2_su, 'd': p2_cr, 'e': p2_pa}
 clear_screen()
-input("Welcome, {}! Please make sure only {} can see the laptop, then press ENTER...".format(
-    p2_name, p1_name))
+input(
+    """Welcome, {}! Please make sure only 
+    {} can see the laptop, then press ENTER...""".format(
+        p2_name, p1_name)
+    )
 clear_screen()
 choice_getter(p1_board, p1)
 clear_screen()
 print(p1_board)
 input("""
-Great job, {}! Now please press ENTER and pass the computer to {} so they can place their ships.
+Great job, {}! Now please press ENTER and pass the 
+computer to {} so they can place their ships.
 """.format(p1.name, p2.name))
 clear_screen()
 choice_getter(p2_board, p2)
 clear_screen()
 print(p2_board)
-input("Great job, {}! Please hit ENTER and pass the computer to {} so they can begin their first turn.".format(p2.name, p1.name))
+input(
+    """Great job, {}! Please hit ENTER and pass the computer to 
+    {} so they can begin their first turn.""".format(
+        p2.name, p1.name)
+    )
 clear_screen()
 game_ongoing = True
 while game_ongoing:
